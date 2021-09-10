@@ -25,6 +25,12 @@
         "axios": "^0.21.4",
         "cors": "^2.8.5",
         "express": "^4.17.1",
-        "express-async-errors": "^3.1.1"
+        "express-async-errors": "^3.1.1",
+        "module-alias": "^2.2.2"
+    },
+    "_moduleAliases": {
+        "@config": "src/config",
+        "@modules": "src/modules",
+        "@shared": "src/shared"
     }
 }
