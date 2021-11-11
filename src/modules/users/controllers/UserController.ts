@@ -17,7 +17,6 @@ class UserController {
         const { name, email, password } = request.body;
         const service = new CreateUserService();
         const user = await service.execute({ name, email, password });
-        // console.log('user');
         return response.json(user);
     }
 }
