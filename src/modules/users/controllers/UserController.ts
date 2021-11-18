@@ -10,10 +10,7 @@ class UserController {
         return response.json(users);
     }
 
-    public async create(
-        request: Request,
-        response: Response,
-    ): Promise<Response> {
+    public async create(request: Request, response: Response): Promise<Response> {
         const { name, email, password } = request.body;
         const service = new CreateUserService();
         const user = await service.execute({ name, email, password });
