@@ -20,20 +20,14 @@ export default class ProductController {
         return response.json(product);
     }
 
-    public async create(
-        request: Request,
-        response: Response,
-    ): Promise<Response> {
+    public async create(request: Request, response: Response): Promise<Response> {
         const { name, price, quantity } = request.body;
         const createProduct = new CreateProductService();
         const product = await createProduct.execute({ name, price, quantity });
         return response.json({ product });
     }
 
-    public async update(
-        request: Request,
-        response: Response,
-    ): Promise<Response> {
+    public async update(request: Request, response: Response): Promise<Response> {
         const { name, price, quantity } = request.body;
         const { id } = request.params;
 
@@ -47,10 +41,7 @@ export default class ProductController {
         return response.json({ product });
     }
 
-    public async delete(
-        request: Request,
-        response: Response,
-    ): Promise<Response> {
+    public async delete(request: Request, response: Response): Promise<Response> {
         const { id } = request.params;
         const deleteProduct = new DeleteProductService();
         await deleteProduct.execute({ id });
