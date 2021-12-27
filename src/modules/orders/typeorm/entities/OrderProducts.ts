@@ -1,6 +1,5 @@
-import Customer from '@modules/costumers/typeorm/entities/Customer';
-import Product from '@modules/products/typeorm/entities/Product';
 import {
+    Column,
     CreateDateColumn,
     Entity,
     JoinColumn,
@@ -8,20 +7,34 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
+
 import Order from './Order';
+import Product from '@modules/products/typeorm/entities/Product';
 
 @Entity('orders_products')
-class OrderProducts {
+class OrdersProducts {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @ManyToOne(() => Order, order => order.order_products)
-    @JoinColumn({ name: 'customer_id' })
+    @JoinColumn({ name: 'order_id' })
     order: Order;
 
     @ManyToOne(() => Product, product => product.order_products)
     @JoinColumn({ name: 'product_id' })
-    product: Product[];
+    product: Product;
+
+    @Column()
+    order_id: string;
+
+    @Column()
+    product_id: string;
+
+    @Column('decimal')
+    price: number;
+
+    @Column('int')
+    quantity: number;
 
     @CreateDateColumn()
     created_at: Date;
@@ -30,4 +43,4 @@ class OrderProducts {
     updated_at: Date;
 }
 
-export default OrderProducts;
+export default OrdersProducts;
