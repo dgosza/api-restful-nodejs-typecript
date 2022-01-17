@@ -7,6 +7,7 @@ import OrderRepository from '../typeorm/repositories/OrderRepository';
 
 interface IRequestProduct {
     id: string;
+    quantity: number;
 }
 
 interface IRequest {
@@ -21,7 +22,7 @@ class CreateOrderService {
         const productRepository = getCustomRepository(ProductsRepository);
 
         const customerExists = await customerRepository.findById(customer_id);
-        if (customerExists) {
+        if (!customerExists) {
             throw new AppError('Could not find the customer with the given id!');
         }
 
@@ -38,6 +39,41 @@ class CreateOrderService {
         if (checkInexistentProducts.length) {
             throw new AppError(`could not find product ${checkInexistentProducts[0].id}`);
         }
+
+        const quantityAvaiable = products.filter(
+            product =>
+                existsProducts.filter(p => p.id === product.id)[0].quantity < product.quantity,
+        );
+
+        if (quantityAvaiable.length) {
+            throw new AppError(
+                `The quantity ${quantityAvaiable[0].quantity} is not available for ${quantityAvaiable[0].id}`,
+            );
+        }
+
+        const serializedProducts = products.map(product => ({
+            product_id: product.id,
+            quantity: product.quantity,
+            price: existsProducts.filter(p => p.id === product.id)[0].price,
+        }));
+
+        const order = await orderRepository.createOrder({
+            customer: customerExists,
+            products: serializedProducts,
+        });
+
+        const { order_products } = order;
+
+        const updatedProductQuantity = order_products.map(product => ({
+            id: product.product_id,
+            quantity:
+                existsProducts.filter(p => p.id === product.product_id)[0].quantity -
+                product.quantity,
+        }));
+
+        await productRepository.save(updatedProductQuantity);
+
+        return order;
     }
 }
 
