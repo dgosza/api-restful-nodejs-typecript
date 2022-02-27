@@ -1,3 +1,4 @@
+import CustomersRepository from 'dist/modules/costumers/typeorm/repositories/CustomersRepository';
 import { Request, Response } from 'express';
 import CreateCustomerService from '../../../services/CreateCustomerService';
 import DeleteCustomerService from '../../../services/DeleteCustomerService';
@@ -21,7 +22,10 @@ class CostumerController {
 
     public async create(request: Request, response: Response): Promise<Response> {
         const { name, email } = request.body;
-        const createCostumer = new CreateCustomerService();
+
+        const customeresRepository = new CustomersRepository();
+
+        const createCostumer = new CreateCustomerService(customeresRepository);
         const costumer = await createCostumer.execute({ name, email });
         return response.json({ costumer });
     }
